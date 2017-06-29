@@ -1,0 +1,14 @@
+dependencies {
+//    compile "com.google.code.gson:gson:$gson_version"
+    compile "org.mongodb:bson:$mongodb_version"
+//        compile "org.mongodb:mongodb-driver-async:$version_mongodb"
+//        compile "org.mongodb:mongodb-driver-core:$version_mongodb"
+
+    testCompile group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo", version: "$embedmongo_version"
+//    testCompile "org.mongodb:mongo-java-driver:$mongodb_version" //this is the version used in de.flapdoodle.embed.mongo see:
+    //testCompile 'io.kotlintest:kotlintest:1.3.5'
+
+}
+
+apply from: '../maven-push-javalib.gradle'
+
