@@ -168,13 +168,233 @@ In code above  we see some inportant conventions used in the DSL
 - __fld..[fieldName]__  is used to specify a field in the source document as argument
 - __mval..[constant]__ is used to specify a literal constant as argument
 - __mvar..[variableName]__ is used to specify a mongodb variable as argument (not in the example)
+
 Also another important thing to note is that in the DSL is possible to specify more than one argument per line by separating them with a semicolumn
 
+## Project Stage: $let operator
+
+in json
+```json
+{
+  "$project": {
+    "the_computed_field": {
+      "$let": {
+        "vars": {
+          "var1": "$field1",
+          "var2": "$field2"
+        },
+        "in": {
+          "$multiply": [
+            "$$var1",
+            "$$var2"
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+        val stage1= mongoAggregateStage {
+            project {
+                "the_computed_field"..{
+                    let{
+                        vars {
+                            "var1"..(mfld.."field1")
+                            "var2"..(mfld.."field2")
+                        }
+                        in_ { multiply { mvar.."var1";mvar.."var2" } }
+                    }
+                }
+            }
+        }
+```
+
+Notice that `in` was renamed `in_` because this is a reserved keyword in Kotlin
+
+## Project Stage: $map operator
+
+in json
+```json
+{
+  "$project": {
+    "the_computed_field": {
+      "$map": {
+        "input": "$quizzes",
+        "as": "grade",
+        "in": {
+          "$sum": ["$$grade",2 ]
+        }
+      }
+    }
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+        val stage1= mongoAggregateStage {
+            project {
+                "the_computed_field"..{
+                    map{
+                        input(mfld.."quizzes") //beware of the pitfall of writing input {mfld.."quizzes"}
+                        as_("grade")
+                        in_ { sum { mvar.."grade";mval..2 } }
+                    }
+                }
+            }
+        }
+```
+
+
+## Project Stage: $let operator with computed variables definition
+
+in json
+```json
+{
+  "$project": {
+    "the_computed_field": {
+      "$let": {
+        "vars": {
+          "var1": {
+            "$sum": ["$field1", "$field2"]
+          },
+          "var2": "$field2"
+        },
+        "in": {
+          "$multiply": ["$$var1", "$$var2"]
+        }
+      }
+    }
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+        val stage1= mongoAggregateStage {
+            project {
+                "the_computed_field"..{
+                    let{
+                        vars {
+                            "var1"..{
+                                sum { mfld.."field1"; mfld.."field2" }
+                            }
+                            "var2"..(mfld.."field2")
+                        }
+                        in_ { multiply { mvar.."var1";mvar.."var2" } }
+                    }
+                }
+            }
+        }
+```
+
+## Project Stage: $zip operator
+
+in json
+```json
+{
+  "$project": {
+    "the_computed_field": {
+      "$zip": {
+        "inputs": [
+          {"$arrayElementAt": ["$matrix", 0]},
+          {"$arrayElementAt": ["$matrix", 1]},
+          {"$arrayElementAt": ["$matrix", 2]}
+        ],
+        "useLongestLength": true,
+        "defaults": "$$defaults"
+      }
+    }
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+        val stage1= mongoAggregateStage {
+            project {
+                "the_computed_field"..{
+                    zip{
+                        inputs {
+                            marg..{arrayElementAt { mfld.."matrix"; mval..0 }}
+                            marg..{arrayElementAt { mfld.."matrix"; mval..1 }}
+                            marg..{arrayElementAt { mfld.."matrix"; mval..2 }}
+                        }
+                        useLongestLength(true)
+                        defaults(mvar.."defaults")
+                    }
+                }
+            }
+        }
+```
+
+A very important thing to notice here is for input fiels like `inputs` that are actually
+an array of expressions, the sytax is to put one expression per line with the syntax `marg..<expression>`
+(or also on the same line separated by a semicolumn).
+This is also true if the argument is not a complex expression, but instead a field in the source document. Also
+in this case you need to use the `marg..<>` syntax
+This is not very intuitive.
+This is even more confusing because for simple operators (operators that takes an a
+simple array of expressions (like `$arrayElementAt`, `$multiply`, etc..) and not an object containing a field that is
+an array of expressions (like `$let`,`$map`,`$reduce`, etc..) , the syntax is much simpler (as shown in the examples above
+This is syntax will probably
+change in the future. Anyway the autocompletion features of the DSL will help a lot in such cases for remembering the correct syntax
+Notice that `as` was also renamed as `as_` because it is a reserved keyword in Kotlin
+
+## Project Stage: $reduce operator
+in json
+```json
+{
+  "$project": {
+    "the_computed_field": {
+      "$reduce": {
+        "input": "$discounts",
+        "initialValue": "$price",
+        "in": {
+          "$multiply": ["$$value", {"$subtract": [1, "$$this"]}
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+        val stage1= mongoAggregateStage {
+            project {
+                "the_computed_field"..{
+                    reduce{
+                        input(mfld.."discounts")
+                        initialValue(mfld.."price")
+                        in_expr {
+                            multiply {
+                                mvar.."value"
+                                marg..{ subtract { mval..1;mvar.."this" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+```
+
+
+
 <a name="kmongodsl_issues"></a>
-
-
 # Disclaimer and known issues
-The code is still in development and the syntax is not yet final
+The code is still in development and incomplete (not all mongodb operators and aggregation stages are implemented)
+ and the syntax is not yet final
 
 
 <a name="kmongodsl_licence"></a>
