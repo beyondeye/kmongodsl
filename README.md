@@ -20,7 +20,7 @@ repositories {
 }
 
 // main kmongodsl package: dependens only from org.mongodb:bson
-compile 'com.github.beyondeye.kmongodsl:kmongodsl:0.1.0'
+    compile 'com.github.beyondeye:kmongodsl:0.1.0'
 ```
 
 <a name="kmongodsl_intro"></a>
