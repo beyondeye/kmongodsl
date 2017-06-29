@@ -8,7 +8,7 @@
 - [Introduction to KMongoDSL](#kmongodsl_intro)
 - [Examples](#kmongodsl_examples)
 - [Disclaimer and issues](#kmongodsl_issues)
-- [Licence](#kmongodsl_licence)
+- [License](#kmongodsl_license)
 
 <a name="gradledeps"></a>
 ## dependencies for gradle
@@ -397,7 +397,7 @@ The code is still in development and incomplete (not all mongodb operators and a
  and the syntax is not yet final
 
 
-<a name="kmongodsl_licence"></a>
+<a name="kmongodsl_license"></a>
 ## License
 ~~~
 Copyright 2017 Dario Elyasy
