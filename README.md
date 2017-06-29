@@ -59,6 +59,120 @@ val stage= mongoAggregateStage
 ```
 
 <a name="kmongodsl_issues"></a>
+
+## Project Stage: select fields to exclude
+
+in json
+```json
+{
+  "$project": {
+    "fieldToExclude": 0
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+ val stage= mongoAggregateStage
+        {
+            project {
+                -"fieldToExclude"
+            }
+        }
+```
+
+## Project Stage: select renamed fields
+
+in json
+```json
+{
+  "$project": {
+    "fieldNewName": "fieldToInclude"
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+  val stage= mongoAggregateStage
+         {
+             project {
+                 "fieldNewName".."fieldToInclude"
+             }
+         }
+```
+
+## Project Stage: select a computed field
+
+in json
+```json
+{
+  "$project": {
+    "the_sliced_field": {
+      "$slice": ["$fieldtoslice", 1, 10]
+    }
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+        val stage= mongoAggregateStage {
+            project {
+                "the_sliced_field"..{
+                    slice("fieldtoslice", 1, 10)
+                }
+            }
+        }
+```
+
+## Project Stage: select a computed field, with more general form for operator arguments
+In the previous example we a short form definition for the `slice` operator. Not all operator
+support this. Now we will see the most general form for specifying argument for
+operators that take an array of argument as input
+in json
+```json
+{
+  "$project": {
+    "the_sliced_field": {
+      "$slice": [
+        {"$sum": ["$a", "$b"]},
+        1,
+        10
+      ]
+    }
+  }
+}
+```
+
+
+with kmongodsl
+```kotlin
+        val stage4= mongoAggregateStage {
+            project {
+                "the_sliced_field"..{
+                    slice{
+                        marg..{ sum { mfld.."a";mfld.."b" } }
+                        mval..1
+                        mval..10
+                    }
+                }
+            }
+        }
+```
+In code above  we see some inportant conventions used in the DSL
+- __marg..[expression]__ is used to specify a general expression as argument
+- __fld..[fieldName]__  is used to specify a field in the source document as argument
+- __mval..[constant]__ is used to specify a literal constant as argument
+- __mvar..[variableName]__ is used to specify a mongodb variable as argument (not in the example)
+Also another important thing to note is that in the DSL is possible to specify more than one argument per line by separating them with a semicolumn
+
+<a name="kmongodsl_issues"></a>
+
+
 # Disclaimer and known issues
 The code is still in development and the syntax is not yet final
 
