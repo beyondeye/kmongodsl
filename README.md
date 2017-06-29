@@ -1,5 +1,5 @@
 [![Kotlin 1.1.3](https://img.shields.io/badge/Kotlin-1.1.3-blue.svg)](http://kotlinlang.org)
-[![](https://jitpack.io/v/beyondeye/kmongosql.svg)](https://jitpack.io/#beyondeye/kmongodsl)
+[![](https://jitpack.io/v/beyondeye/kmongoDSL.svg)](https://jitpack.io/#beyondeye/kmongodsl)
 # kmongoDSL: A Kotlin DSL for MongoDB
 
  
