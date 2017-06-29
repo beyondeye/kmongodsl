@@ -19,7 +19,7 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
-// main kmongodsl package
+// main kmongodsl package: dependens only from org.mongodb:bson
 compile 'com.github.beyondeye.kmongodsl:kmongodsl:0.1.0'
 ```
 
@@ -32,6 +32,8 @@ KMongo DSL  solve this problem and has also several other advantages:
 - Auto completion of name of aggregation stages, operators and operator parameters
 - auto indenting and code folding like regular Kotlin code
 - Directly output BSON without the need to parse a JSON string.
+
+The library
 
 <a name="kmongodsl_examples"></a>
 # Examples
