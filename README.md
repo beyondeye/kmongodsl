@@ -28,7 +28,7 @@ compile 'com.github.beyondeye.kmongodsl:kmongodsl:0.1.0'
 MongoDB [aggregation pipeline](https://docs.mongodb.com/manual/core/aggregation-pipeline/) is very powerful. But writing complex multistage
 aggregations is error-prone. Also  the extensive use of the "$" sign in MongoDB command syntax
 create many problems in Kotlin where the same symbol is used for triggering string interpolation.
-KMongo DSL  solve this problem and has also have several other advantages:
+KMongo DSL  solve this problem and has also several other advantages:
 - Auto completion of name of aggregation stages, operators and operator parameters
 - auto indenting and code folding like regular Kotlin code
 - Directly output BSON without the need to parse a JSON string.
@@ -130,9 +130,10 @@ with kmongodsl
 ```
 
 ## Project Stage: select a computed field, with more general form for operator arguments
-In the previous example we a short form definition for the `slice` operator. Not all operator
-support this. Now we will see the most general form for specifying argument for
-operators that take an array of argument as input
+In the previous example we saw a short form definition for the `slice` operator. Not all operators
+support this. Now we will see the most general form for specifying arguments for
+operators that take an array of arguments as input
+
 in json
 ```json
 {
@@ -163,7 +164,7 @@ with kmongodsl
             }
         }
 ```
-In code above  we see some inportant conventions used in the DSL
+In the code above  we see some inportant conventions used in the DSL
 - __marg..[expression]__ is used to specify a general expression as argument
 - __fld..[fieldName]__  is used to specify a field in the source document as argument
 - __mval..[constant]__ is used to specify a literal constant as argument
@@ -335,17 +336,18 @@ with kmongodsl
         }
 ```
 
-A very important thing to notice here is for input fiels like `inputs` that are actually
-an array of expressions, the sytax is to put one expression per line with the syntax `marg..<expression>`
+A very important thing to notice here is that for input fields  that are actually
+an array of expressions (like `inputs` in the example above), the syntax is to put one expression per line with the syntax `marg..<expression>`
 (or also on the same line separated by a semicolumn).
-This is also true if the argument is not a complex expression, but instead a field in the source document. Also
+This is also true if the expression in the array is not a complex expression, but instead a field in the source document. Also
 in this case you need to use the `marg..<>` syntax
 This is not very intuitive.
-This is even more confusing because for simple operators (operators that takes an a
+This is even more confusing because for simple operators (operators that takes a
 simple array of expressions (like `$arrayElementAt`, `$multiply`, etc..) and not an object containing a field that is
 an array of expressions (like `$let`,`$map`,`$reduce`, etc..) , the syntax is much simpler (as shown in the examples above
-This is syntax will probably
-change in the future. Anyway the autocompletion features of the DSL will help a lot in such cases for remembering the correct syntax
+This complex syntax using `marg..`  will probably change in the future.
+
+Anyway the autocompletion features of the DSL will help a lot in such cases for remembering the correct syntax
 Notice that `as` was also renamed as `as_` because it is a reserved keyword in Kotlin
 
 ## Project Stage: $reduce operator
